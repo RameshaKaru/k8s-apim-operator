@@ -179,7 +179,7 @@ func (r *ReconcileAPI) Reconcile(request reconcile.Request) (reconcile.Result, e
 	imageName := image + ":" + tag
 
 	// check if the image already exists
-	imageExist, errImage := isImageExist(image, tag, r)
+	imageExist, errImage := isImageExist(dockerRegistry+"/"+image, tag, r)
 	if errImage != nil {
 		log.Error(errImage, "Error in image finding")
 	}
