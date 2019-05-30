@@ -183,7 +183,7 @@ func (r *ReconcileAPI) Reconcile(request reconcile.Request) (reconcile.Result, e
 	if errImage != nil {
 		log.Error(errImage, "Error in image finding")
 	}
-	fmt.Println("image exist? " + strconv.FormatBool(imageExist))
+	log.Info("image exist? " + strconv.FormatBool(imageExist))
 
 	newSwagger := mgwSwaggerHandler(r, swagger)
 
@@ -770,10 +770,9 @@ func isImageExist(image string, tag string, r *ReconcileAPI) (bool, error) {
 		log.Error(err, "error getting tags")
 		return false, err
 	}
-	fmt.Println(tags)
 	for _, foundTag := range tags {
 		if foundTag == tag {
-			fmt.Println("found")
+			log.Info("found the image tag")
 			return true, nil
 		}
 	}
