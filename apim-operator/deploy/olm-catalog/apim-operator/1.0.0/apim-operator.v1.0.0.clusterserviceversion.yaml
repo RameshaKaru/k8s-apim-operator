@@ -1,0 +1,137 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    capabilities: Basic Install
+  name: apim-operator.v1.0.0
+  namespace: default
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - kind: API
+      name: apis.wso2.com
+      version: v1alpha1
+      description: Placeholder description
+      displayName: Apim Operator
+    - kind: RateLimiting
+      name: ratelimitings.wso2.com
+      version: v1alpha1
+      description: Placeholder description
+      displayName: Apim Operator
+    - kind: Security
+      name: securities.wso2.com
+      version: v1alpha1
+      description: Placeholder description
+      displayName: Apim Operator
+    - kind: TargetEndpoint
+      name: targetendpoints.wso2.com
+      version: v1alpha1
+      description: Placeholder description
+      displayName: Apim Operator
+  description: Placeholder description
+  displayName: Apim Operator
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - '*'
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - '*'
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - apim-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - wso2.com
+          resources:
+          - '*'
+          - ratelimitings
+          - targetendpoints
+          - securities
+          verbs:
+          - '*'
+        - apiGroups:
+          - batch
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        - apiGroups:
+          - autoscaling
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        serviceAccountName: apim-operator
+      deployments:
+      - name: apim-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: apim-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: apim-operator
+            spec:
+              containers:
+              - command:
+                - apim-operator
+                env:
+                - name: WATCH_NAMESPACE
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: apim-operator
+                image: rameshakaru/api-operator:v1.0.2
+                imagePullPolicy: Always
+                name: apim-operator
+                resources: {}
+              serviceAccountName: apim-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: true
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  maturity: alpha
+  provider: {}
+  version: 1.0.0
